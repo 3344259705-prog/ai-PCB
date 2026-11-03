@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+!.env.example
+private/
+local-data/
+*.epro2
+*.epru
+*.PcbDoc
+*.SchDoc
+*.kicad_pcb
+*.zip
+*.log

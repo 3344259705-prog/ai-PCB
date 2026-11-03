@@ -1,0 +1,69 @@
+{
+  "schema_version": "0.1-draft",
+  "episode_id": "synthetic-001",
+  "project_family_id": "fictional-controller",
+  "synthetic": true,
+  "task": {
+    "kind": "pcb_net_mapping_repair",
+    "instruction_summary": "Fictional example: repair an authorized gate-net mapping without moving components."
+  },
+  "constraints": {
+    "allowed_actions": [
+      "network_mapping"
+    ],
+    "forbidden_actions": [
+      "component_replacement",
+      "pose_change",
+      "rule_relaxation"
+    ],
+    "unknown_parameters": [
+      "finished_copper_thickness",
+      "cooling"
+    ]
+  },
+  "artifacts": {
+    "cad": "Fictional CAD example",
+    "availability": "redacted_summary",
+    "before_sha256": null,
+    "after_sha256": null
+  },
+  "actions": [
+    {
+      "kind": "guard",
+      "status": "blocked",
+      "summary": "Fictional stale-state guard blocked a candidate before any write."
+    },
+    {
+      "kind": "network_mapping",
+      "status": "executed",
+      "authorization_ref": "synthetic-authorization-001",
+      "summary": "Fictional authorized net repair; no real CAD was edited."
+    }
+  ],
+  "validation": {
+    "result_scope": "selected_checks_passed",
+    "board_ready": false,
+    "hardware_tested": false,
+    "drc_before": {
+      "clearance": 2,
+      "connection": 4,
+      "netlist": 1
+    },
+    "drc_after": {
+      "clearance": 2,
+      "connection": 6,
+      "netlist": 1
+    },
+    "evidence_summary": [
+      "All values are synthetic, not measurements.",
+      "An increase in unrouted objects need not invalidate a local net-definition repair.",
+      "This is not a finished or validated PCB."
+    ]
+  },
+  "rights": {
+    "source_license_status": "synthetic_mit",
+    "public_release_allowed": true,
+    "retrieval_use_allowed": true,
+    "training_use_allowed": true
+  }
+}

@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PCBLoop Design Episode Draft",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "episode_id",
+    "project_family_id",
+    "task",
+    "constraints",
+    "artifacts",
+    "actions",
+    "validation",
+    "rights"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1-draft"
+    },
+    "episode_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_family_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task": {
+      "type": "object",
+      "required": [
+        "kind",
+        "instruction_summary"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "instruction_summary": {
+          "type": "string"
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": [
+        "allowed_actions",
+        "forbidden_actions",
+        "unknown_parameters"
+      ],
+      "properties": {
+        "allowed_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "forbidden_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unknown_parameters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "required": [
+        "cad",
+        "availability"
+      ],
+      "properties": {
+        "cad": {
+          "type": "string"
+        },
+        "availability": {
+          "enum": [
+            "local_only",
+            "redacted_summary",
+            "public_sources"
+          ]
+        },
+        "before_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "after_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "status",
+          "summary"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "proposed",
+              "blocked",
+              "executed",
+              "reverted",
+              "accepted"
+            ]
+          },
+          "summary": {
+            "type": "string"
+          },
+          "authorization_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": [
+        "result_scope",
+        "board_ready",
+        "hardware_tested"
+      ],
+      "properties": {
+        "result_scope": {
+          "enum": [
+            "not_checked",
+            "failed",
+            "selected_checks_passed",
+            "cad_constraints_passed",
+            "bench_verified"
+          ]
+        },
+        "board_ready": {
+          "type": "boolean"
+        },
+        "hardware_tested": {
+          "type": "boolean"
+        },
+        "evidence_summary": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "drc_before": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "drc_after": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "rights": {
+      "type": "object",
+      "required": [
+        "source_license_status",
+        "public_release_allowed",
+        "retrieval_use_allowed",
+        "training_use_allowed"
+      ],
+      "properties": {
+        "source_license_status": {
+          "type": "string"
+        },
+        "public_release_allowed": {
+          "type": "boolean"
+        },
+        "retrieval_use_allowed": {
+          "type": "boolean"
+        },
+        "training_use_allowed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "synthetic": {
+      "type": "boolean",
+      "description": "True only for explicitly fictional examples."
+    },
+    "toolchain": {
+      "type": "object",
+      "description": "CAD, model, adapter and checker versions, when available."
+    }
+  },
+  "$comment": "Draft exchange format. Metadata validation does not inspect a CAD file or grant publication/training rights."
+}

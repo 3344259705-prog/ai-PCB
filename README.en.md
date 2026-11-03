@@ -2,13 +2,13 @@
 
 **Move PCB design forward through conversation, with clear evidence, checks and handoffs.**
 
-[中文](README.md) · [Usage guide](docs/skill.md) · [Architecture](docs/architecture.md) · [Data specification](docs/dataset.md) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md)
+[中文](README.md) · [Usage guide](docs/skill.md) · [Local case memory](docs/case-memory.md) · [Architecture](docs/architecture.md) · [Data specification](docs/dataset.md) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md)
 
 PCBLoop is an open-source project for AI-assisted PCB design. It turns lessons from hands-on human–AI collaboration into an installable **skill** that guides an agent to verify the current design, respect editing boundaries, work in manageable batches and leave useful records for the next session.
 
 Use it to help with component preparation, footprint and pin-net review, layout and routing planning, and DRC issue handling. Provide the project location, task and permitted changes so the agent can follow a consistent workflow without repeatedly rebuilding the same context.
 
-The current release, **`v0.2.0-skill`**, includes the workflow skill, an installer, a draft episode format and local validation tools. Actual CAD access requires separate tools. The first planned integration is 嘉立创EDA专业版 (EasyEDA Professional Edition).
+The current release, **`v0.3.0-local-memory`**, includes the workflow skill, an installer, a draft episode format, local validation tools and a working local case database. Actual CAD access requires separate tools. The first planned integration is 嘉立创EDA专业版 (EasyEDA Professional Edition).
 
 ## What the skill helps with
 
@@ -64,9 +64,16 @@ Installation does not connect CAD, grant editing permissions or upload projects.
 | [Draft episode schema](schemas/episode.schema.json) | Tasks, constraints, actions, validation and usage rights |
 | [Synthetic example](examples/synthetic_episode.json) | A fictional record demonstrating the format |
 | [Local validator](docs/validator.md) | JSON structure and selected metadata consistency checks |
+| [Local case memory](docs/case-memory.md) | Opt-in storage, operator review, condition-filtered retrieval, feedback and local export |
 | Tests and CI | Installer behavior, package structure and validator checks |
 
 A standalone CAD adapter, automated state guards and rollback, an autorouter, a community database and model-training services are not implemented. A check required by the skill is not necessarily a checker supplied by this repository.
+
+## Reuse experience in the next task
+
+The local SQLite tool supports **record → review → retrieve → validate in the new design → feedback**. Records are pending until reviewed, synthetic examples are excluded by default, and context keys and values must match. Negative feedback removes a case from default retrieval until re-review; positive feedback does not approve pending cases.
+
+Run `python tools/case_memory.py --help` from the repository, or follow the [synthetic demonstration](docs/case-memory.md). The tool needs this repository and its dependencies; the standalone skill folder does not include it. There is no cloud receiver, automatic upload, independent CAD verification or model training. Review and evidence fields are operator declarations, not proof of engineering correctness.
 
 ## From individual work to shared experience
 
@@ -104,7 +111,7 @@ skills/pcbloop/  Workflow skill, references and project brief template
 docs/            Architecture, usage guide and data specification
 schemas/         Draft episode format
 examples/        Synthetic examples
-tools/           Local installer and metadata validator
+tools/           Local installer, metadata validator and case database
 tests/           Installer, package and validator tests
 .github/         CI and contribution templates
 ```

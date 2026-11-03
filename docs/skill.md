@@ -80,3 +80,9 @@ python tools/install_skill.py --skills-dir ./local-skills
 - `assets/project-brief.template.md`：本地项目简报，不作为强制填表门槛。
 
 原有JSON Schema与验证工具仍在仓库中，负责样本元数据检查；它们不是Skill执行CAD的前置服务器，也不需要随Skill复制到个人目录。
+
+## 可选本地经验库
+
+仓库工具现在提供案例记录、审核、检索和反馈。用户启用后，Skill按`references/case-memory.md`接入；需要保留源码仓库及Python依赖，独立Skill包不包含数据库程序。
+
+它不会自动批准真实案例、上传数据或训练模型。演示、权限、证据和社区服务的后续实现见[本地经验库指南](case-memory.md)。

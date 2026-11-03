@@ -13,3 +13,9 @@ local-data/
 *.kicad_pcb
 *.zip
 *.log
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*

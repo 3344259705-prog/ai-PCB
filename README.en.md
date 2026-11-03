@@ -1,28 +1,86 @@
 # PCBLoop
 
-**Conversational PCB collaboration with verifiable engineering experience.**
+**Move PCB design forward through conversation, with clear evidence, checks and handoffs.**
 
-[中文](README.md)
+[中文](README.md) · [Usage guide](docs/skill.md) · [Architecture](docs/architecture.md) · [Data specification](docs/dataset.md) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md)
 
-Status: **v0.2.0-skill**. This repository provides an installable PCB workflow skill,
-architecture documents, a draft episode schema, a synthetic example and a local metadata validator.
-There is **no working CAD adapter, autorouter, community database or model-training service yet**.
+PCBLoop is an open-source project for AI-assisted PCB design. It turns lessons from hands-on human–AI collaboration into an installable **skill** that guides an agent to verify the current design, respect editing boundaries, work in manageable batches and leave useful records for the next session.
 
-## Vision
+Use it to help with component preparation, footprint and pin-net review, layout and routing planning, and DRC issue handling. Provide the project location, task and permitted changes so the agent can follow a consistent workflow without repeatedly rebuilding the same context.
 
-A user explains a PCB task and its constraints. An AI reads the current design,
-proposes changes within the granted scope, and uses a CAD adapter to execute them.
-State guards, diffs, connectivity checks, DRC, checkpoints and human review produce
-an auditable engineering episode. Approved and appropriately licensed episodes
-can later support retrieval, evaluation and separate model-training experiments.
+The current release, **`v0.2.0-skill`**, includes the workflow skill, an installer, a draft episode format and local validation tools. Actual CAD access requires separate tools. The first planned integration is 嘉立创EDA专业版 (EasyEDA Professional Edition).
 
-The first intended CAD integration is 嘉立创EDA专业版 (EasyEDA Professional Edition).
-No third-party bridge, real PCB source, private conversation or collected dataset
-is distributed in this repository. There is no telemetry or upload service.
+## What the skill helps with
 
-## Run the local validator
+- **Identify the right design:** check the target PCB, component revision, footprints and pin-net mapping before relying on old information.
+- **Follow your chosen division of work:** prepare components for manual layout, or continue design work within the current task and authorization.
+- **Preserve existing work:** check live changes before editing, retain human contributions and avoid replaying stale scripts or restoring old snapshots over newer work.
+- **Plan connected tasks together:** consider current paths, signal returns and module dependencies, then execute multiple modules with checkpoints.
+- **Report what was actually checked:** distinguish connectivity, clearance, short-circuit and netlist issues rather than treating a lower DRC count as proof of a finished board.
+- **Make the next session easier:** record changes, saved versions and remaining tasks so work can resume from a known state.
 
-Use Python 3.10+ in a virtual environment:
+These are instructions for the agent. Results still depend on the model, available CAD tools, project conditions and human review. Independent multi-model, multi-board behavioral evaluation has not yet been completed.
+
+## Quick start
+
+Use Python 3.10 or later. Clone the repository and install the skill:
+
+```bash
+git clone https://github.com/3344259705-prog/ai-PCB.git
+cd ai-PCB
+python tools/install_skill.py
+```
+
+The installer uses only the Python standard library and copies the skill into your personal skills directory. It refuses to overwrite a different version or local edits.
+
+Start a new Codex conversation and provide the actual project location:
+
+```text
+Use $pcbloop.
+Project location: [your project directory or target PCB].
+Read the latest handoff reports and verify the current design first.
+Preserve component models, footprints, pin-net mapping and existing routes;
+layout and copper optimization are allowed.
+Continue unfinished modules in priority order, save and check each module,
+and produce a handoff report at the end.
+```
+
+For preparation only:
+
+```text
+Use $pcbloop to organize the selected component revision and review pin-net
+mapping and ratsnest visibility. Preserve the existing layout and do not route.
+List any circuit changes that need authorization, with supporting evidence.
+```
+
+Installation does not connect CAD, grant editing permissions or upload projects. See the [usage guide](docs/skill.md) for custom locations, upgrades and session-resumption examples.
+
+## What's included
+
+| Component | Purpose |
+|---|---|
+| [`pcbloop` skill](skills/pcbloop/SKILL.md) | Design identification, authorization scope, batch work, checkpoints and handoffs |
+| [Supporting references](docs/skill.md) | Task-specific notes on EasyEDA operations, power and mixed-signal work, and recovery reports |
+| [Draft episode schema](schemas/episode.schema.json) | Tasks, constraints, actions, validation and usage rights |
+| [Synthetic example](examples/synthetic_episode.json) | A fictional record demonstrating the format |
+| [Local validator](docs/validator.md) | JSON structure and selected metadata consistency checks |
+| Tests and CI | Installer behavior, package structure and validator checks |
+
+A standalone CAD adapter, automated state guards and rollback, an autorouter, a community database and model-training services are not implemented. A check required by the skill is not necessarily a checker supplied by this repository.
+
+## From individual work to shared experience
+
+Our long-term goal is to make authorized, verified design experience reusable. Useful records include successful approaches, failed attempts, human corrections and the conditions under which each approach applies.
+
+The planned loop is:
+
+**Task and constraints → design review and planning → scoped CAD actions → checks and human review → local records → optional, reviewed sharing → case retrieval.**
+
+We plan to improve workflows, tools and curated retrieval before pursuing separate model-training experiments. Training requires suitable source and usage rights, fixed dataset versions and evaluation split by project family. Adding cases to a database does not automatically update model parameters, and volume does not replace quality review. See the [roadmap](ROADMAP.md).
+
+## Validate examples and run tests
+
+Development dependencies are separate from skill installation. In a Python virtual environment, run:
 
 ```bash
 python -m pip install -r requirements-dev.txt
@@ -31,38 +89,34 @@ python tools/validate_episode.py --for-publication examples/synthetic_episode.js
 python -m unittest discover -s tests -v
 ```
 
-This tool checks JSON structure and selected metadata consistency rules only.
-It does not inspect CAD geometry, establish legal rights, validate real DRC,
-authorize tool use, or certify a board for fabrication or operation.
-All values in the supplied example are fictional.
+The validator checks JSON and selected metadata conventions. It does not inspect CAD geometry, establish legal rights, validate real DRC, or assess electrical performance or fabrication conditions. User acceptance, CAD checks and hardware validation must be recorded separately. See the [validator notes](docs/validator.md) and [data specification](docs/dataset.md).
 
-## Install the workflow skill
+## Data and privacy
 
-```bash
-python tools/install_skill.py
+This repository contains no real PCB projects or private conversation transcripts. It has no background collection, telemetry or automatic uploads. Public sharing, retrieval use and model training require their respective authorizations.
+
+Do not submit access tokens, personal information, customer material or unauthorized third-party designs. Private model chain-of-thought is not collected. Collection and review procedures for real cases are still being designed.
+
+## Repository structure
+
+```text
+skills/pcbloop/  Workflow skill, references and project brief template
+docs/            Architecture, usage guide and data specification
+schemas/         Draft episode format
+examples/        Synthetic examples
+tools/           Local installer and metadata validator
+tests/           Installer, package and validator tests
+.github/         CI and contribution templates
 ```
 
-The standard-library installer copies `skills/pcbloop` to `$CODEX_HOME/skills`
-or `~/.codex/skills`. Existing local edits are never overwritten. Start a new
-Codex conversation and invoke `$pcbloop` with your project and task.
-See the [usage guide](docs/skill.md) for examples and custom locations.
+## Help improve PCBLoop
 
-The skill instructs the agent to check live state, respect authorization, plan
-dependent nets together, execute multiple modules with checkpoints, and write
-honest verification and handoff reports. These are workflow instructions, not
-implemented CAD guards. Actual CAD access needs separate tools; installation
-does not connect a bridge, grant editing rights or upload data. The bundled
-skill has not yet undergone independent multi-board behavioral evaluation.
+Contributions are welcome: usage feedback, workflow improvements, synthetic tests, CAD adapter designs and validation methods. Include the task conditions, expected behavior and observed result so others can assess the issue.
 
-## Learning loop
+Read [CONTRIBUTING](CONTRIBUTING.md) before submitting changes, or explore the [roadmap](ROADMAP.md) for areas to work on.
 
-Start with curated retrieval and better execution tools. Model fine-tuning is a
-separate future workflow requiring suitable data, explicit rights and held-out
-project-family evaluation. Adding records to a database does not update model
-parameters automatically.
+## License and attribution
 
-See [architecture](docs/architecture.md), [dataset design](docs/dataset.md),
-[roadmap](ROADMAP.md) and [contributing](CONTRIBUTING.md).
+Original repository content is [MIT-licensed](LICENSE). Third-party designs, extensions, models and future datasets retain their own rights; see [NOTICE](NOTICE.md).
 
-Original repository content is MIT-licensed. Third-party designs, extensions,
-models and future datasets retain their own rights; see [NOTICE](NOTICE.md).
+PCBLoop is an independent community project, not an official product of a CAD or AI vendor. Its workflow and tools do not certify a board's electrical safety, manufacturability or hardware performance.

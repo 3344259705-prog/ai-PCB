@@ -4,8 +4,8 @@
 
 [中文](README.md)
 
-Status: **v0.1.0-spec**. This repository currently provides architecture documents,
-a draft episode schema, a synthetic example and a local metadata validator.
+Status: **v0.2.0-skill**. This repository provides an installable PCB workflow skill,
+architecture documents, a draft episode schema, a synthetic example and a local metadata validator.
 There is **no working CAD adapter, autorouter, community database or model-training service yet**.
 
 ## Vision
@@ -35,6 +35,24 @@ This tool checks JSON structure and selected metadata consistency rules only.
 It does not inspect CAD geometry, establish legal rights, validate real DRC,
 authorize tool use, or certify a board for fabrication or operation.
 All values in the supplied example are fictional.
+
+## Install the workflow skill
+
+```bash
+python tools/install_skill.py
+```
+
+The standard-library installer copies `skills/pcbloop` to `$CODEX_HOME/skills`
+or `~/.codex/skills`. Existing local edits are never overwritten. Start a new
+Codex conversation and invoke `$pcbloop` with your project and task.
+See the [usage guide](docs/skill.md) for examples and custom locations.
+
+The skill instructs the agent to check live state, respect authorization, plan
+dependent nets together, execute multiple modules with checkpoints, and write
+honest verification and handoff reports. These are workflow instructions, not
+implemented CAD guards. Actual CAD access needs separate tools; installation
+does not connect a bridge, grant editing rights or upload data. The bundled
+skill has not yet undergone independent multi-board behavioral evaluation.
 
 ## Learning loop
 

@@ -2,9 +2,9 @@
 
 **用对话协作设计PCB，让经过验证的工程经验形成可复用的社区知识。**
 
-[English](README.en.md) · [架构](docs/architecture.md) · [数据规范](docs/dataset.md) · [路线图](ROADMAP.md) · [参与贡献](CONTRIBUTING.md)
+[English](README.en.md) · [安装Skill](docs/skill.md) · [架构](docs/architecture.md) · [数据规范](docs/dataset.md) · [路线图](ROADMAP.md) · [参与贡献](CONTRIBUTING.md)
 
-> 当前阶段：`v0.1.0-spec`——项目规范、样本格式与本地验证工具。
+> 当前阶段：`v0.2.0-skill`——可安装的PCB协作流程Skill、样本规范与本地验证工具。
 > **尚未实现可运行的CAD适配器、自动布线插件、社区数据库或模型训练平台。**
 
 ## 我们要解决什么
@@ -43,6 +43,7 @@ flowchart LR
 
 | 已有 | 后续计划 |
 |---|---|
+| 可安装的PCB协作流程Skill与保留个人修改的安装器 | 多板卡/多模型的Skill行为评测 |
 | 项目架构与工程约束说明 | 嘉立创只读快照适配器 |
 | 对话/操作回合的JSON Schema草案 | 状态保护、受控执行和回滚 |
 | 明确标注的合成样本 | 本地操作采集与检查点 |
@@ -51,6 +52,23 @@ flowchart LR
 
 本仓库不包含真实PCB工程或真实聊天原文，没有后台采集、遥测或自动上传。
 案例中的数字都是演示数据，不代表实际PCB测量。
+
+## 作为Skill使用
+
+仓库提供可安装的[`pcbloop` Skill](skills/pcbloop/SKILL.md)，将现场核对、授权边界、联合规划、连续多模块、检查点与跨会话交接整理为AI执行指令。
+
+```bash
+python tools/install_skill.py
+```
+
+安装后新建Codex对话，输入：
+
+```text
+使用 $pcbloop。先读取我的PCB工程及最新交接报告，核对实际状态，
+保留现有器件、网络和人工布线，只继续未完成模块。
+```
+
+安装器只复制本地Skill，不连接或修改CAD。实际操作需要另行可用的CAD工具；Skill中的状态保护与验证是执行要求，不是已经实现的CAD自动守卫。详见[安装、调用与续接示例](docs/skill.md)。
 
 ## 快速检查示例
 
@@ -85,6 +103,7 @@ examples/        仅合成示例
 tools/           本地样本验证工具
 tests/           验证工具测试
 .github/         CI与投稿模板
+skills/pcbloop/  可安装的协作流程Skill及按需参考资料
 ```
 
 ## 参与方式

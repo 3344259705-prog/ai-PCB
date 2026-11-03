@@ -1,0 +1,4 @@
+interface:
+  display_name: "PCBLoop PCB协作"
+  short_description: "核对真实PCB状态，联合规划与批次执行，保存检查点并生成续接报告"
+  default_prompt: "使用 $pcbloop，先核对我的PCB工程与最新交接状态，按当前授权连续完成未完成模块，并保存检查结果和续接报告。"
